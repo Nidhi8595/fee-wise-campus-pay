@@ -1,13 +1,42 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React, { useState } from 'react';
+import LandingPage from '../components/LandingPage';
+import LoginModal from '../components/LoginModal';
+import FeeDashboard from '../components/FeeDashboard';
 
 const Index = () => {
+  const [currentPage, setCurrentPage] = useState<'landing' | 'dashboard'>('landing');
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [loginType, setLoginType] = useState<'student' | 'admin'>('student');
+
+  const handleLoginSuccess = () => {
+    setIsLoginModalOpen(false);
+    setCurrentPage('dashboard');
+  };
+
+  const handleLoginClick = (type: 'student' | 'admin') => {
+    setLoginType(type);
+    setIsLoginModalOpen(true);
+  };
+
+  const handleBackToLanding = () => {
+    setCurrentPage('landing');
+  };
+
+  if (currentPage === 'dashboard') {
+    return <FeeDashboard onBackToLanding={handleBackToLanding} />;
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <>
+      <LandingPage onLoginClick={handleLoginClick} />
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+        onLoginSuccess={handleLoginSuccess}
+        loginType={loginType}
+      />
+    </>
   );
 };
 
